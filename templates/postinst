@@ -7,6 +7,7 @@ declare -r init_type='{{ nexus_deb_init }}'
 declare -ri no_rebuild='{{ nexus_deb_no_rebuild }}'
 declare -r install_strategy='{{ install_strategy }}'
 declare -r npx_path='{{ npx_path }}'
+declare -r install_dir='{{nexus_deb_install_dir}}'
 
 add_user() {
   : "${1:?'User was not defined'}"
@@ -43,6 +44,21 @@ add_group() {
   if ! getent group | grep -q "^$group:" ; then
     echo "Creating system group: $group"
     groupadd $gid_flags --system $group
+  fi
+}
+
+add_to_path () {
+: "${1:?'bin path was not defined'}"
+ : "${2:?'bine file name was not defined'}"
+
+  declare -r bin_path="$1"
+  declare -r bin_name="$2"
+
+   # Check if the symlink already exists
+  if [ ! -L "/usr/bin/$bin_name" ]; then
+    ln -s "$bin_path" /usr/bin/"$bin_name"
+  else
+    echo "Symlink /usr/bin/$bin_name already exists."
   fi
 }
 
@@ -102,4 +118,6 @@ if [[ "$init_type" != 'none' ]]; then
   chown -R '{{ nexus_deb_user }}:{{ nexus_deb_group }}' '/var/log/{{ nexus_deb_package_name }}'
 
   start_service '{{ nexus_deb_package_name }}'
+
+  add_to_path '{{ nexus_deb_install_dir }}/{{ nexus_deb_package_name }}/bin/{{ nexus_deb_package_name }}' '{{ nexus_deb_package_name }}'
 fi
