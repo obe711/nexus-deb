@@ -1,0 +1,8 @@
+Package: {{ nexus_deb_package_name }}
+Version: {{ nexus_deb_package_version }}
+Architecture: {{ nexus_deb_package_architecture }}
+Essential: no
+Priority: optional
+Depends: {{ nexus_deb_package_dependencies }},  coreutils, bash, dpkg, fakeroot, jq
+Maintainer: {{ nexus_deb_package_maintainer }}
+Description: {{ nexus_deb_package_description }}
