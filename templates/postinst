@@ -48,18 +48,26 @@ add_group() {
 }
 
 add_to_path () {
-: "${1:?'bin path was not defined'}"
- : "${2:?'bine file name was not defined'}"
-
+  : "${1:?'bin path was not defined'}"
   declare -r bin_path="$1"
+
+  : "${2:?'bine file name was not defined'}"
   declare -r bin_name="$2"
 
-   # Check if the symlink already exists
-  if [ ! -L "/usr/bin/$bin_name" ]; then
-    ln -s "$bin_path" /usr/bin/"$bin_name"
-  else
-    echo "Symlink /usr/bin/$bin_name already exists."
-  fi
+  # if [ -f "/usr/bin/$bin_name"]; then
+  #   echo "Symlink /usr/bin/$bin_name EXITSTS."
+  # else
+  #   ln -s "$bin_path" /usr/bin/"$bin_name"
+  #   echo "Symlink /usr/bin/$bin_name created."
+  # fi
+
+
+  # if hash "/usr/bin/$bin_name" 2> /dev/null; then
+  #    ln -s "$bin_path" /usr/bin/"$bin_name"
+  #    echo "Symlink /usr/bin/$bin_name created."
+  # else
+  #   echo "Symlink /usr/bin/$bin_name already exists."
+  # fi
 }
 
 start_service () {
@@ -118,6 +126,6 @@ if [[ "$init_type" != 'none' ]]; then
   chown -R '{{ nexus_deb_user }}:{{ nexus_deb_group }}' '/var/log/{{ nexus_deb_package_name }}'
 
   start_service '{{ nexus_deb_package_name }}'
-
-  add_to_path '{{ nexus_deb_install_dir }}/{{ nexus_deb_package_name }}/bin/{{ nexus_deb_package_name }}' '{{ nexus_deb_package_name }}'
 fi
+
+add_to_path '{{ nexus_deb_install_dir }}/{{ nexus_deb_package_name }}/bin/{{ nexus_deb_package_name }}' '{{ nexus_deb_package_name }}'

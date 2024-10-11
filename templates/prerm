@@ -26,10 +26,7 @@ if [[ "$init_type" == 'auto' || "$init_type" == 'systemd' || "$init_type" == 'up
   fi
 fi
 
-if [ ! -L "/usr/bin/$bin_name" ]; then
-  rm "/usr/bin/$bin_name"
-else
-  echo "Symlink /usr/bin/$bin_name did not exists."
-fi
 
+rm -rf "{{ nexus_deb_install_dir }}/$service_name/bin"
+  
 rm -rf "{{ nexus_deb_install_dir }}/$service_name/app/node_modules"
