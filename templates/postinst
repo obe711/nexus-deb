@@ -57,8 +57,8 @@ add_to_path () {
   # if [ -f "/usr/bin/$bin_name"]; then
   #   echo "Symlink /usr/bin/$bin_name EXITSTS."
   # else
-  #   ln -s "$bin_path" /usr/bin/"$bin_name"
-  #   echo "Symlink /usr/bin/$bin_name created."
+     ln -s "$bin_path" /usr/bin/"$bin_name"
+    echo "Symlink /usr/bin/$bin_name created."
   # fi
 
 

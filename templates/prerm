@@ -26,7 +26,6 @@ if [[ "$init_type" == 'auto' || "$init_type" == 'systemd' || "$init_type" == 'up
   fi
 fi
 
-
-rm -rf "{{ nexus_deb_install_dir }}/$service_name/bin"
+rm "{{ nexus_deb_install_dir }}/$service_name/bin/$service_name"
   
 rm -rf "{{ nexus_deb_install_dir }}/$service_name/app/node_modules"
