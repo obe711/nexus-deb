@@ -391,7 +391,9 @@ replace_vars "$template_prerm" "$deb_dir/DEBIAN/prerm" '0755'
 replace_vars "$template_executable" "$deb_dir$install_dir/$package_name/bin/$executable_name" '0755'
 replace_vars "$template_default_variables" "$deb_dir/etc/default/$package_name" '0644'
 
-cat .env >> "$deb_dir/etc/default/$package_name"
+if [ -f './.env' ]; then
+  cat .env >> "$deb_dir/etc/default/$package_name"
+fi
 
 if [ "$init" == 'auto' ] || [ "$init" == 'upstart' ]; then
   replace_vars "$template_upstart" "$deb_dir/etc/init/$package_name.conf" '0644'

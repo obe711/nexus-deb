@@ -4,6 +4,7 @@ set -e
 
 declare -r init_type='{{ nexus_deb_init }}'
 declare -r install_dir='{{ install_dir }}'
+declare -r executable='{{ nexus_deb_executable_name }}'
 
 
 
@@ -36,17 +37,26 @@ delete_group() {
 }
 
 case "$1" in
-  upgrade|remove|failed-upgrade|abort-upgrade|abort-install|disappear)
+  upgrade|failed-upgrade|abort-upgrade|abort-install|disappear)
     ;;
+
   purge)
     if [[ "$init_type" != 'none' ]]; then
       delete_user '{{ nexus_deb_user }}'
       delete_group '{{ nexus_deb_group }}'
     fi
 
+    echo "Remove /var/log/{{ nexus_deb_package_name }}"
+
     rm -rf '/var/log/{{ nexus_deb_package_name }}'
-    rm -rf '{{ install_dir }}/{{ nexus_deb_package_name }}/app'
+
+    echo "Remove {{ nexus_deb_install_dir }}/{{ nexus_deb_package_name }}"
+    rm -rf '{{ nexus_deb_install_dir }}/{{ nexus_deb_package_name }}'
     ;;
+  remove)
+    echo "Remove {{ nexus_deb_install_dir }}/{{ nexus_deb_package_name }}"
+    rm -rf '{{ nexus_deb_install_dir }}/{{ nexus_deb_package_name }}'
+  ;;
   *)
     echo "postinst called with unknown argument '$1'"
     ;;

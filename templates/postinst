@@ -8,6 +8,8 @@ declare -ri no_rebuild='{{ nexus_deb_no_rebuild }}'
 declare -r install_strategy='{{ install_strategy }}'
 declare -r npx_path='{{ npx_path }}'
 declare -r install_dir='{{nexus_deb_install_dir}}'
+declare -r executable='{{ nexus_deb_executable_name }}'
+declare -r package_name='{{ nexus_deb_package_name }}'
 
 add_user() {
   : "${1:?'User was not defined'}"
@@ -51,23 +53,16 @@ add_to_path () {
   : "${1:?'bin path was not defined'}"
   declare -r bin_path="$1"
 
-  : "${2:?'bine file name was not defined'}"
-  declare -r bin_name="$2"
-
-  # if [ -f "/usr/bin/$bin_name"]; then
-  #   echo "Symlink /usr/bin/$bin_name EXITSTS."
-  # else
-     ln -s "$bin_path" /usr/bin/"$bin_name"
-    echo "Symlink /usr/bin/$bin_name created."
-  # fi
+  echo "Adding $bin_path to /usr/bin/$executable"
 
 
-  # if hash "/usr/bin/$bin_name" 2> /dev/null; then
-  #    ln -s "$bin_path" /usr/bin/"$bin_name"
-  #    echo "Symlink /usr/bin/$bin_name created."
-  # else
-  #   echo "Symlink /usr/bin/$bin_name already exists."
-  # fi
+  if [ -L "/usr/bin/$executable" ]; then
+    echo "File already in path!"
+  else
+    ln -s "$bin_path" /usr/bin/"$executable"
+    echo "Symlink /usr/bin/$executable created."
+  fi
+
 }
 
 start_service () {
@@ -128,4 +123,4 @@ if [[ "$init_type" != 'none' ]]; then
   start_service '{{ nexus_deb_package_name }}'
 fi
 
-add_to_path '{{ nexus_deb_install_dir }}/{{ nexus_deb_package_name }}/bin/{{ nexus_deb_package_name }}' '{{ nexus_deb_package_name }}'
+add_to_path '{{ nexus_deb_install_dir }}/{{ nexus_deb_package_name }}/bin/{{ nexus_deb_executable_name }}'
