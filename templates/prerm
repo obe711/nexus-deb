@@ -25,7 +25,5 @@ if [[ "$init_type" == 'auto' || "$init_type" == 'systemd' || "$init_type" == 'up
     echo 'Unless these systems were removed since install, no processes have been left running'
   fi
 fi
-
-rm "{{ nexus_deb_install_dir }}/$service_name/bin/$service_name"
   
 rm -rf "{{ nexus_deb_install_dir }}/$service_name/app/node_modules"
