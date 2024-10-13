@@ -12,6 +12,8 @@ WorkingDirectory={{ nexus_deb_install_dir }}/{{ nexus_deb_package_name }}
 ExecStart={{ nexus_deb_install_dir }}/{{ nexus_deb_package_name }}/app/{{ daemon_entrypoint }}
 ExecReload=/bin/kill -HUP $MAINPID
 Restart=always
+ExecStartPre=/bin/mkdir -m 740 -p /var/log/{{ nexus_deb_package_name }}
+ExecStartPre=/bin/chown nexus:nexus /var/log/{{ nexus_deb_package_name }}
 User={{ nexus_deb_user }}
 PermissionsStartOnly=true
 
