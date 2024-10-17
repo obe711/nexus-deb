@@ -4,7 +4,7 @@ set -e
 set -o pipefail
 
 declare -r init_type='{{ nexus_deb_init }}'
-declare -ri no_rebuild='{{ nexus_deb_no_rebuild }}'
+declare -r no_rebuild='{{ nexus_deb_no_rebuild }}'
 declare -r install_strategy='{{ install_strategy }}'
 declare -r npx_path='{{ npx_path }}'
 declare -r install_dir='{{nexus_deb_install_dir}}'
