@@ -47,3 +47,18 @@ sudo apt install ./debian/your_new_package_1.0.0_amd64.deb
 ```
 sudo apt remove your_new_package
 ```
+
+## NVM
+If using NVM set symlinks - copy and paste in terminal
+
+```bash
+for item in node npx npm; do
+  if [ ! -L "/usr/bin/$item" ]; then
+    echo "Creating symlink for $item"
+    sudo ln -s $(which "$item") "/usr/bin/$item"
+    echo "Symlink for $item created."
+  else
+    echo "Symlink for $item exists."
+  fi
+done
+```

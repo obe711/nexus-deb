@@ -1,2 +1,2 @@
-NODE_PATH=/home/nexus/.nvm/versions/node/v22.0.0/bin/node
+NODE_PATH=/usr/bin/node
 NODE_ENV="production"
