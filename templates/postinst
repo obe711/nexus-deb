@@ -102,7 +102,7 @@ case $install_strategy in
       ;;
     npm-install)
       echo 'Installing dependenencies from NPM'
-      npm install --production --unsafe-perm
+      npm install --omit=dev --unsafe-perm
       ;;
     *)
       echo "WARN: Unexpected install strategy: $install_strategy"
