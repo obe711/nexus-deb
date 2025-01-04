@@ -36,6 +36,14 @@ readlink_f() {
 }
 
 
+install_build_tools() {
+  sudo apt-get install coreutils dpkg fakeroot jq -y
+}
+
+
+install_build_tools
+
+
 
 ### VALIDATION ###
 
@@ -67,6 +75,8 @@ declare -r source_dir
 echo_logger() {
   echo 'Nexus Builder:' "$@"
 }
+
+
 
 # Set the package name
 if [ -z "$package_name" ]; then

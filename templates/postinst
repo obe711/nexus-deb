@@ -101,8 +101,8 @@ case $install_strategy in
       # pass
       ;;
     npm-install)
-      echo 'Installing dependenencies from YARN'
-      "$npx_path" yarn
+      echo 'Installing dependenencies from NPM'
+      npm install --production --unsafe-perm
       ;;
     *)
       echo "WARN: Unexpected install strategy: $install_strategy"
