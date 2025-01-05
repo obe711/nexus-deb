@@ -15,4 +15,4 @@ fi
 
 echo "removing package $package_name"
 
-sudo apt-get purge "$package_name"
+sudo apt-get purge "$package_name" -y
