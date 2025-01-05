@@ -52,6 +52,10 @@ case "$1" in
 
     echo "Remove {{ nexus_deb_install_dir }}/{{ nexus_deb_package_name }}"
     rm -rf '{{ nexus_deb_install_dir }}/{{ nexus_deb_package_name }}'
+    if [ -L "/usr/bin/$executable" ]; then
+      echo "Remove simlink!"
+      rm "/usr/bin/{{ nexus_deb_package_name }}"
+    fi
     ;;
   remove)
     echo "Remove {{ nexus_deb_install_dir }}/{{ nexus_deb_package_name }}"
