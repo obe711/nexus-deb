@@ -123,4 +123,11 @@ if [[ "$init_type" != 'none' ]]; then
   start_service '{{ nexus_deb_package_name }}'
 fi
 
+if [ -d "/etc/sudoers.d/{{ nexus_deb_package_name }}" ]; then
+  sudo chown root:root /etc/sudoers.d/{{ nexus_deb_package_name }}
+  sudo chmod 440 /etc/sudoers.d/{{ nexus_deb_package_name }}
+fi
+
+
+
 add_to_path '{{ nexus_deb_install_dir }}/{{ nexus_deb_package_name }}/bin/{{ nexus_deb_executable_name }}'

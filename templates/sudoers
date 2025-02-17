@@ -1,0 +1,2 @@
+# Allow nexus user to restart the service without password
+{{ sudoers }}

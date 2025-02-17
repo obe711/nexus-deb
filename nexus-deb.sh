@@ -251,7 +251,38 @@ if [ -z "$cli_entrypoint" ]; then
 fi
 echo_logger "The CLI entrypoint has been set to: $cli_entrypoint"
 
+
+
+
+# Set sudoers
+SUDOERS_CONTENT=""
+if [ -z "$sudoers" ]; then
+  # Read the array from package.json and convert to bash array
+  readarray -t sudoers_array < <(jq -r '.nexus.sudoers[]?' package.json)
+  
+  if [ ${#sudoers_array[@]} -gt 0 ]; then
+    # Add each sudoers line in the correct format
+    for s_line in "${sudoers_array[@]}"; do
+      SUDOERS_CONTENT+="$user ALL=(ALL) NOPASSWD: $s_line"$'\n'
+    done
+  fi
+fi
+
+echo_logger "The sudoers file set to: $SUDOERS_CONTENT"
+
+
+
 # Templates
+
+# Set sudoers template
+if [ -z "$template_sudoers" ]; then
+  template_sudoers=$(jq -r '.nexus.templates.sudoers_template' package.json)
+  if [[ "$template_sudoers" == 'null' ]]; then
+    template_sudoers=''
+  fi
+fi
+: ${template_sudoers:="$nexus_deb_dir/templates/sudoers"}
+echo_logger "The sudoers template has been set to: $template_sudoers"
 
 # Set systemd unit template
 if [ -z "$template_systemd" ]; then
@@ -354,7 +385,8 @@ mkdir -p "$deb_dir/DEBIAN" \
          "$deb_dir$install_dir/$package_name/app" \
          "$deb_dir$install_dir/$package_name/bin" \
          "$deb_dir/lib/systemd/system" \
-         "$deb_dir/usr/bin"
+         "$deb_dir/usr/bin" \
+         "$deb_dir/etc/sudoers.d"
 
 escape() {
   sed -e 's/[]\/$*.^|[]/\\&/g' -e 's/&/\\&/g' <<< "$@"
@@ -367,6 +399,10 @@ escape() {
   declare -r file="$1"
   declare -r target_file="$2"
   declare -r permissions="$3"
+
+   # Create a temporary file to store the sudoers content
+  SUDOERS_TMP=$(mktemp)
+  echo -n "$SUDOERS_CONTENT" > "$SUDOERS_TMP"
 
   ### BEGIN TEMPLATE_VARS ###
   sed < "$file" \
@@ -387,6 +423,8 @@ escape() {
     -e "s/{{ install_strategy }}/$(escape "$install_strategy")/g" \
     -e "s/{{ nexus_deb_install_dir }}/$(escape "$install_dir")/g" \
     -e "s/{{ npx_path }}/$(escape "$npx_path")/g" \
+    -e "/{{ sudoers }}/r $SUDOERS_TMP" \
+    -e "/{{ sudoers }}/d" \
   > "$target_file"
   ### END TEMPLATE_VARS ###
   chmod "$permissions" "$target_file"
@@ -401,6 +439,7 @@ replace_vars "$template_prerm" "$deb_dir/DEBIAN/prerm" '0755'
 replace_vars "$template_executable" "$deb_dir$install_dir/$package_name/bin/$executable_name" '0755'
 replace_vars "$template_default_variables" "$deb_dir/etc/default/$package_name" '0644'
 
+
 if [ -f './.env' ]; then
   cat .env >> "$deb_dir/etc/default/$package_name"
 fi
@@ -411,6 +450,10 @@ fi
 
 if [ "$init" == 'auto' ] || [ "$init" == 'systemd' ]; then
   replace_vars "$template_systemd" "$deb_dir/lib/systemd/system/$package_name.service" '0644'
+fi
+
+if [[ "$SUDOERS_CONTENT" != '' ]]; then
+  replace_vars "$template_sudoers" "$deb_dir/etc/sudoers.d/$package_name" '0440'
 fi
 
 find "$deb_dir/etc" -type f | sed "s/^$(escape "$deb_dir")//" > "$deb_dir/DEBIAN/conffiles"

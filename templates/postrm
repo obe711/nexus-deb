@@ -61,6 +61,12 @@ case "$1" in
   remove)
     echo "Remove {{ nexus_deb_install_dir }}/{{ nexus_deb_package_name }}"
     rm -rf '{{ nexus_deb_install_dir }}/{{ nexus_deb_package_name }}'
+
+    if [ -d "/etc/sudoers.d/{{ nexus_deb_package_name }}" ]; then
+      echo "Remove /etc/sudoers.d/{{ nexus_deb_package_name }}"
+      rm -rf '/etc/sudoers.d/{{ nexus_deb_package_name }}'
+    fi
+   
   ;;
   *)
     echo "postinst called with unknown argument '$1'"
